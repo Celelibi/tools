@@ -161,7 +161,8 @@ void sha1append(const char *prefixhash, const char *append, size_t appendlen,
 		uint64_t datapadsize = nblock * SHA_CBLOCK;
 		uint64_t datapadsizebits = datapadsize * 8;
 		uint64_t padzerosize = datapadsize - datasize - 8 - 1;
-		unsigned char *p;
+
+		printf("%016llx\n", datasizebits);
 
 		/* Compute the final hash if the prefix data is i bytes long */
 		c.Nh = datapadsizebits >> 32;
@@ -182,9 +183,8 @@ void sha1append(const char *prefixhash, const char *append, size_t appendlen,
 			printf("\\x00");
 
 		/* Big endian datasize */
-		p = (unsigned char *)&datasizebits;
-		for (i = 0; i < sizeof(datasizebits); i++)
-			printf("\\x%02x", p[sizeof(datasizebits) - 1 - i]);
+		for (i = 0; i < 64; i += 8)
+			printf("\\x%02x", (unsigned char)(datasizebits >> (56 - i)));
 
 		for (i = 0; i < appendlen; i++)
 			printf("\\x%02x", append[i]);
